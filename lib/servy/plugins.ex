@@ -4,7 +4,7 @@ defmodule Servy.Plugins do
 
   alias Servy.Conv
 
-  def emojify(%Conv{status: 200} = conv) do
+  def emojify(%Conv{status: 200, resp_headers: %{"Content-Type" => "text/html"}} = conv) do
     emojies = String.duplicate("🎉", 5)
     body = emojies <> "\n" <> conv.resp_body <> "\n" <> emojies
 
