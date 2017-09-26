@@ -6,4 +6,6 @@ defmodule Servy.BearView do
   EEx.function_from_file :def, :index, Path.join(@templates_path, "index.eex"), [:bears]
 
   EEx.function_from_file :def, :show, Path.join(@templates_path, "show.eex"), [:bear]
+
+  EEx.function_from_file :def, :sensors, Path.join(@templates_path, "sensors.eex"), [:snapshots, :location]
 end
