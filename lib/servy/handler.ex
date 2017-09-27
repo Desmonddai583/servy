@@ -5,9 +5,6 @@ defmodule Servy.Handler do
   alias Servy.Conv
   alias Servy.BearController
   alias Servy.PledgeController
-  alias Servy.VideoCam
-  alias Servy.Fetcher
-  alias Servy.Tracker
   alias Servy.BearView
 
   @pages_path Path.expand("../../pages", __DIR__)
@@ -49,17 +46,19 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "GET", path: "/sensors"} = conv) do
     # pid4 = Fetcher.async(fn -> Tracker.get_location("bigfoot") end)
-    task = Task.async(fn -> Tracker.get_location("bigfoot") end)
+    # task = Task.async(fn -> Tracker.get_location("bigfoot") end)
 
-    snapshots =
-    ["cam-1", "cam-2", "cam-3"]
-    |> Enum.map(&Fetcher.async(fn -> VideoCam.get_snapshot(&1) end))
-    |> Enum.map(&Fetcher.get_result/1)
+    # snapshots =
+    # ["cam-1", "cam-2", "cam-3"]
+    # |> Enum.map(&Fetcher.async(fn -> VideoCam.get_snapshot(&1) end))
+    # |> Enum.map(&Fetcher.get_result/1)
 
     # where_is_bigfoot = Fetcher.get_result(pid4)
-    where_is_bigfoot = Task.await(task)
+    # where_is_bigfoot = Task.await(task)
 
-    %{ conv | status: 200, resp_body: BearView.sensors(snapshots, where_is_bigfoot) }
+    sensor_data = Servy.SensorServer.get_sensor_data()
+
+    %{ conv | status: 200, resp_body: BearView.sensors(sensor_data.snapshots, sensor_data.where_is_bigfoot) }
   end
 
   def route(%Conv{method: "GET", path: "/hibernate" <> time} = conv) do
